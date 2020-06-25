@@ -1,0 +1,20 @@
+### Login
+POST http://localhost:4000/graphql HTTP/1.1
+X-Request-Type: GraphQL
+Content-Type: application/json
+
+mutation Login{
+  login(email: "alice@email.com", password:"pAsSWoRd!")
+}
+
+### Get My Account Details
+POST http://localhost:4000/graphql HTTP/1.1
+X-Request-Type: GraphQL
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2F3ZXNvbWVhcGkuY29tL2dyYXBocWwiOnsicm9sZXMiOlsiYWRtaW4iXSwicGVybWlzc2lvbnMiOlsicmVhZDphbnlfYWNjb3VudCIsInJlYWQ6b3duX2FjY291bnQiXX0sImlhdCI6MTU5MzA2MTI1MiwiZXhwIjoxNTkzMTQ3NjUyLCJzdWIiOiIxMjM0NSJ9.eGnETJkSYSjxP3-BUdztay0BNi9eIgDW7_mTKBlmEgM
+
+query GetViewer {
+	viewer {
+    name
+  }
+}
