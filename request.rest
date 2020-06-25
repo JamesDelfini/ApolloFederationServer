@@ -4,17 +4,72 @@ X-Request-Type: GraphQL
 Content-Type: application/json
 
 mutation Login{
-  login(email: "alice@email.com", password:"pAsSWoRd!")
+  login(email: "bob@email.com", password:"pAsSWoRd!")
 }
 
 ### Get My Account Details
 POST http://localhost:4000/graphql HTTP/1.1
 X-Request-Type: GraphQL
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2F3ZXNvbWVhcGkuY29tL2dyYXBocWwiOnsicm9sZXMiOlsiYWRtaW4iXSwicGVybWlzc2lvbnMiOlsicmVhZDphbnlfYWNjb3VudCIsInJlYWQ6b3duX2FjY291bnQiXX0sImlhdCI6MTU5MzA2MTI1MiwiZXhwIjoxNTkzMTQ3NjUyLCJzdWIiOiIxMjM0NSJ9.eGnETJkSYSjxP3-BUdztay0BNi9eIgDW7_mTKBlmEgM
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2F3ZXNvbWVhcGkuY29tL2dyYXBocWwiOnsicm9sZXMiOlsic3Vic2NyaWJlciJdLCJwZXJtaXNzaW9ucyI6WyJyZWFkOm93bl9hY2NvdW50IiwicmVhZDphbnlfYXN0cm9uYXV0Il19LCJpYXQiOjE1OTMwNjQyNjEsImV4cCI6MTU5MzE1MDY2MSwic3ViIjoiNjc4OTAifQ.y9jqK7DQj6QS3fU_r6cxZDhXznS1v2ttA4u2ZC7d1Bc
 
 query GetViewer {
 	viewer {
     name
   }
+}
+
+### Get Astronauts Details
+POST http://localhost:4000/graphql HTTP/1.1
+X-Request-Type: GraphQL
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2F3ZXNvbWVhcGkuY29tL2dyYXBocWwiOnsicm9sZXMiOlsic3Vic2NyaWJlciJdLCJwZXJtaXNzaW9ucyI6WyJyZWFkOm93bl9hY2NvdW50IiwicmVhZDpvd25fbWlzc2lvbiJdfSwiaWF0IjoxNTkzMDY2NzY1LCJleHAiOjE1OTMxNTMxNjUsInN1YiI6IjY3ODkwIn0.EEPISwxd_9gRp2iR44RMeT-6E83Pi3qU9RS-SDH8GdE
+
+query GetAstronautsAndMissions {
+  astronauts {
+    name
+    missions {
+      designation
+      startDate
+      endDate
+    }
+  }
+}
+
+### Get Missions
+POST http://localhost:4000/graphql HTTP/1.1
+X-Request-Type: GraphQL
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2F3ZXNvbWVhcGkuY29tL2dyYXBocWwiOnsicm9sZXMiOlsic3Vic2NyaWJlciJdLCJwZXJtaXNzaW9ucyI6WyJyZWFkOm93bl9hY2NvdW50IiwicmVhZDpvd25fbWlzc2lvbiJdfSwiaWF0IjoxNTkzMDY4MjM5LCJleHAiOjE1OTMxNTQ2MzksInN1YiI6IjY3ODkwIn0.bUwt7UQED23PBSgVnAtEiCkl5he2XMsMBMyRyOJd67M
+
+query GetAstronautsAndMissions {
+  missions {
+    designation
+    startDate
+    endDate
+    crew {
+      name
+    }
+  }
+}
+
+### Get Missions Allowed
+POST http://localhost:4000/graphql HTTP/1.1
+X-Request-Type: GraphQL
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL2F3ZXNvbWVhcGkuY29tL2dyYXBocWwiOnsicm9sZXMiOlsiYWRtaW4iXSwicGVybWlzc2lvbnMiOlsicmVhZDphbnlfYWNjb3VudCIsInJlYWQ6b3duX2FjY291bnQiLCJyZWFkOmFueV9hc3Ryb25hdXQiLCJyZWFkOmFueV9taXNzaW9uIl19LCJpYXQiOjE1OTMwNzMzMTUsImV4cCI6MTU5MzE1OTcxNSwic3ViIjoiMTIzNDUifQ.9mH3QrVMXUzwJoCGtbYQLPFlf7jXUJMy-0IyWv2ecuI
+
+query GetMission ($id: ID!){
+  mission (id: $id){
+    designation
+    startDate
+    endDate
+    crew {
+      name
+    }
+  }
+}
+
+{
+  "id": 10
 }

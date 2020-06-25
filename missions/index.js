@@ -1,9 +1,19 @@
-const { ApolloServer, gql } = require("apollo-server");
+const { ApolloServer, gql, ForbiddenError } = require("apollo-server");
+const { applyMiddleware } = require("graphql-middleware");
 const { buildFederatedSchema } = require("@apollo/federation");
 const fetch = require("node-fetch");
 
+const { permissions } = require("./permissions");
+
 const port = 4003;
 const apiUrl = "http://localhost:3000";
+
+function getPermissions(user) {
+  if (user && user["https://awesomeapi.com/graphql"]) {
+    return user["https://awesomeapi.com/graphql"].permissions;
+  }
+  return [];
+}
 
 const typeDefs = gql`
   type Mission {
@@ -37,12 +47,20 @@ const resolvers = {
     }
   },
   Mission: {
-    crew(mission) {
+    crew(mission, _, context) {
+      const userId = parseInt(context.user.sub);
+
+      const userPermissions = getPermissions(context.user);
+
+      if (userPermissions)
+        if (userPermissions.includes("read:own_mission"))
+          if (!mission.crew.find(crewId => crewId === userId))  return [];
+      
       return mission.crew.map(id => ({ __typename: "Astronaut", id }));
     }
   },
   Query: {
-    mission(_, { id }) {
+    async mission(_, { id }, context) {
       return fetch(`${apiUrl}/missions/${id}`).then(res => res.json());
     },
     missions() {
@@ -52,7 +70,14 @@ const resolvers = {
 };
 
 const server = new ApolloServer({
-  schema: buildFederatedSchema([{ typeDefs, resolvers }])
+  schema: applyMiddleware(
+    buildFederatedSchema([{ typeDefs, resolvers }]),
+    permissions
+  ),
+  context: ({ req }) => {
+    const user = req.headers.user ? JSON.parse(req.headers.user) : null;
+    return { user };
+  }
 });
 
 server.listen({ port }).then(({ url }) => {

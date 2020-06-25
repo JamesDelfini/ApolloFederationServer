@@ -12,7 +12,6 @@ const isAuthenticated = rule()((parent, args, { user }) => {
 });
 
 const canReadAnyAccount = rule()((parent, args, { user }) => {
-  console.log(user);
   const userPermissions = getPermissions(user);
   return userPermissions && userPermissions.includes("read:any_account");
 });

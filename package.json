@@ -24,8 +24,8 @@
     "server": "concurrently -k npm:server:*",
     "server:rest": "json-server -q db.json",
     "server:accounts": "nodemon ./accounts/index.js",
-    "server:astronauts": "nodemon astronauts.js",
-    "server:mission": "nodemon missions.js",
+    "server:astronauts": "nodemon ./astronauts/index.js",
+    "server:mission": "nodemon ./missions/index.js",
     "server:gateway": "wait-on tcp:4001 && nodemon ./index.js"
   },
   "keywords": [],

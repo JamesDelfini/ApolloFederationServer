@@ -1,9 +1,13 @@
 const { ApolloServer, gql } = require("apollo-server");
+const { applyMiddleware } = require("graphql-middleware");
 const { buildFederatedSchema } = require("@apollo/federation");
 const fetch = require("node-fetch");
 
+const { permissions } = require("./permissions");
+
 const port = 4002;
 const apiUrl = "http://localhost:3000";
+
 
 const typeDefs = gql`
   type Astronaut @key(fields: "id") {
@@ -34,7 +38,14 @@ const resolvers = {
 };
 
 const server = new ApolloServer({
-  schema: buildFederatedSchema([{ typeDefs, resolvers }])
+  schema: applyMiddleware(
+    buildFederatedSchema([{ typeDefs, resolvers }]),
+    permissions
+  ),
+  context: ({ req }) => {
+    const user = req.headers.user ? JSON.parse(req.headers.user) : null;
+    return { user };
+  }
 });
 
 server.listen({ port }).then(({ url }) => {
